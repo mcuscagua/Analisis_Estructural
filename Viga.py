@@ -773,6 +773,6 @@ def obtener_Rs(Tramos, momentos):
         R = Rs2 + shift(Rs1, 1)
         return R
 
-    else Tramos[0]['voladizo'] == 'si':
+    else:
         R = Rs2 + shift(Rs1, -1)
-        return np.concatenate(Rs1[0],R)
+        return np.concatenate(Rs1[0], R)
