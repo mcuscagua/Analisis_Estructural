@@ -775,4 +775,5 @@ def obtener_Rs(Tramos, momentos):
 
     else:
         R = Rs2 + shift(Rs1, -1)
-        return np.concatenate(Rs1[0], R)
+        return np.insert(R,0,Rs1[0])
+
