@@ -585,96 +585,146 @@ def calcular_d(tramo1, tramo2, empo=False, posempo=0):
 
 
 def calcular_momentos(Tramos):
-    nrows = 0
 
-    coeficientes = []
-    for i in range(len(Tramos) - 1):
-        tramo1 = Tramos[i]
-        tramo2 = Tramos[i + 1]
+    if len(Tramos) == 2:
+        tramo1 = Tramos[0]
+        tramo2 = Tramos[1]
 
-        if tramo1['voladizo'] == 'si':
-            M1 = calcular_voladizo(tramo1, 0)
-            coeficientes.append([0, 1, 0, M1])
+        nrows = 1
+        coeficientes = []
+        for i in range(len(Tramos) - 1):
+            if tramo1['empotrado'] == 'si':
+                coeficientes.append(calcular_empotrado(tramo1, 0))
+                nrows += 1
 
-        elif tramo1['empotrado'] == 'si':
-            coeficientes.append(calcular_empotrado(tramo1, 0))
+            elif tramo2['empotrado'] == 'si':
+                coeficientes.append(calcular_empotrado(tramo2, 1))
+                nrows += 1
+
+            else:
+                coeficientes.append(coeficientes_momentos(tramo1, tramo2))
+
+        if len(coeficientes) == 1:
+            return  [0 , coeficientes[0][-1] / coeficientes[0][1], 0]
+        else:
+            Matriz_A = np.zeros((nrows, len(Tramos)))
+            Vector_B = np.zeros((nrows, 1))
+
+            if tramo1['empotrado'] == 'si':
+                Matriz_A[0, 0] = coeficientes[0][0]
+                Matriz_A[0, 1] = coeficientes[0][1]
+                Matriz_A[1, 0] = coeficientes[1][0]
+                Matriz_A[1, 1] = coeficientes[1][1]
+                Vector_B[0] = coeficientes[0][-1]
+                Vector_B[1] = coeficientes[1][-1]
+
+                sln = np.linalg.inv(Matriz_A).dot(Vector_B)[:, 0].tolist()
+                return sln + [0]
+
+            elif tramo2['empotrado'] == 'si':
+                Matriz_A[0, 0] = coeficientes[0][1]
+                Matriz_A[0, 1] = coeficientes[0][2]
+                Matriz_A[1, 0] = coeficientes[1][0]
+                Matriz_A[1, 1] = coeficientes[1][1]
+                Vector_B[0] = coeficientes[0][-1]
+                Vector_B[1] = coeficientes[1][-1]
+
+                sln = np.linalg.inv(Matriz_A).dot(Vector_B)[:, 0].tolist()
+
+                return [0] + sln
+
+    else:
+
+        nrows = 0
+
+        coeficientes = []
+        for i in range(len(Tramos) - 1):
+            tramo1 = Tramos[i]
+            tramo2 = Tramos[i + 1]
+
+            if tramo1['voladizo'] == 'si':
+                M1 = calcular_voladizo(tramo1, 0)
+                coeficientes.append([0, 1, 0, M1])
+
+            elif tramo1['empotrado'] == 'si':
+                coeficientes.append(calcular_empotrado(tramo1, 0))
+                nrows += 1
+
+            elif tramo2['voladizo'] == 'si':
+                Mn = calcular_voladizo(tramo2, 1)
+                coeficientes.append([0, 1, 0, Mn])
+
+            elif tramo2['empotrado'] == 'si':
+                coeficientes.append(calcular_empotrado(tramo2, 1))
+                nrows += 1
+
+            else:
+                coeficientes.append(coeficientes_momentos(tramo1, tramo2))
+
             nrows += 1
 
-        elif tramo2['voladizo'] == 'si':
-            Mn = calcular_voladizo(tramo2, 1)
-            coeficientes.append([0, 1, 0, Mn])
+        Matriz_A = np.zeros((nrows, len(Tramos) + 1))
+        Vector_B = np.zeros((nrows, 1))
 
-        elif tramo2['empotrado'] == 'si':
-            coeficientes.append(calcular_empotrado(tramo2, 1))
-            nrows += 1
+        counter = 0
 
-        else:
-            coeficientes.append(coeficientes_momentos(tramo1, tramo2))
+        for i in range(len(coeficientes)):
+            if counter == 0 and Tramos[0]['empotrado'] == "si":
+                Matriz_A[i, counter] = coeficientes[i][0]
+                Matriz_A[i, counter + 1] = coeficientes[i][1]
+                Vector_B[i] = coeficientes[i][-1]
 
-        nrows += 1
+            else:
+                Matriz_A[i, counter] = coeficientes[i][0]
+                Matriz_A[i, counter + 1] = coeficientes[i][1]
+                Matriz_A[i, counter + 2] = coeficientes[i][2]
 
-    Matriz_A = np.zeros((nrows, len(Tramos) + 1))
-    Vector_B = np.zeros((nrows, 1))
+                Vector_B[i] = coeficientes[i][-1]
 
-    counter = 0
+                counter += 1
 
-    for i in range(len(coeficientes)):
-        if counter == 0 and Tramos[0]['empotrado'] == "si":
-            Matriz_A[i, counter] = coeficientes[i][0]
-            Matriz_A[i, counter + 1] = coeficientes[i][1]
-            Vector_B[i] = coeficientes[i][-1]
+        if Tramos[0]['voladizo'] == 'si':
+            Matriz_A = Matriz_A[:, 1:]
+            Vector_B[1] = Vector_B[1] - Vector_B[0] * Matriz_A[1, 0]
+            Vector_B = Vector_B[1:]
+            Matriz_A = Matriz_A[:, 1:-1]
+            Matriz_A = Matriz_A[1:, ]
 
-        else:
-            Matriz_A[i, counter] = coeficientes[i][0]
-            Matriz_A[i, counter + 1] = coeficientes[i][1]
-            Matriz_A[i, counter + 2] = coeficientes[i][2]
+        elif Tramos[-1]['voladizo'] == 'si':
+            Matriz_A = Matriz_A[:, :-1]
+            Vector_B[-2] = Vector_B[-2] - Vector_B[-1] * Matriz_A[-2, -1]
+            Vector_B = Vector_B[:-1]
+            Matriz_A = Matriz_A[:, 1:-1]
+            Matriz_A = Matriz_A[:-1, :]
 
-            Vector_B[i] = coeficientes[i][-1]
+        elif Tramos[0]['empotrado'] == 'si':
+            Matriz_A = Matriz_A[:, :-1]
 
-            counter += 1
+        elif Tramos[-1]['empotrado'] == 'si':
+            Matriz_A = Matriz_A[:, 1:]
 
-    if Tramos[0]['voladizo'] == 'si':
-        Matriz_A = Matriz_A[:, 1:]
-        Vector_B[1] = Vector_B[1] - Vector_B[0] * Matriz_A[1, 0]
-        Vector_B = Vector_B[1:]
-        Matriz_A = Matriz_A[:, 1:-1]
-        Matriz_A = Matriz_A[1:, ]
+        elif Tramos[0]['empotrado'] == 'no':
+            Matriz_A = Matriz_A[:, 1:]
 
-    elif Tramos[-1]['voladizo'] == 'si':
-        Matriz_A = Matriz_A[:, :-1]
-        Vector_B[-2] = Vector_B[-2] - Vector_B[-1] * Matriz_A[-2, -1]
-        Vector_B = Vector_B[:-1]
-        Matriz_A = Matriz_A[:, 1:-1]
-        Matriz_A = Matriz_A[:-1, :]
+        elif Tramos[-1]['empotrado'] == 'no':
+            Matriz_A = Matriz_A[:, :-1]
 
-    elif Tramos[0]['empotrado'] == 'si':
-        Matriz_A = Matriz_A[:, :-1]
+        sln = np.linalg.inv(Matriz_A).dot(Vector_B)[:, 0].tolist()
 
-    elif Tramos[-1]['empotrado'] == 'si':
-        Matriz_A = Matriz_A[:, 1:]
+        if Tramos[0]['voladizo'] == 'si':
+            sln = [M1] + sln
 
-    elif Tramos[0]['empotrado'] == 'no':
-        Matriz_A = Matriz_A[:, 1:]
+        if Tramos[1]['voladizo'] == 'si':
+            sln = sln + [Mn]
 
-    elif Tramos[-1]['empotrado'] == 'no':
-        Matriz_A = Matriz_A[:, :-1]
+        if len(sln) < len(Tramos) + 1:
+            if Tramos[0]['voladizo'] == 'si' or (Tramos[0]['voladizo'] == 'no' and Tramos[0]['empotrado'] == 'no'):
+                sln = [0] + sln
 
-    sln = np.linalg.inv(Matriz_A).dot(Vector_B)[:, 0].tolist()
+            if Tramos[-1]['voladizo'] == 'si' or (Tramos[-1]['voladizo'] == 'no' and Tramos[-1]['empotrado'] == 'no'):
+                sln = sln + [0]
 
-    if Tramos[0]['voladizo'] == 'si':
-        sln = [M1] + sln
-
-    if Tramos[1]['voladizo'] == 'si':
-        sln = sln + [Mn]
-
-    if len(sln) < len(Tramos) + 1:
-        if Tramos[0]['voladizo'] == 'si' or (Tramos[0]['voladizo'] == 'no' and Tramos[0]['empotrado'] == 'no'):
-            sln = [0] + sln
-
-        if Tramos[-1]['voladizo'] == 'si' or (Tramos[-1]['voladizo'] == 'no' and Tramos[-1]['empotrado'] == 'no'):
-            sln = sln + [0]
-
-    return sln
+        return sln
 
 
 def calcular_sum_Fy(tramo):
@@ -715,5 +765,14 @@ def obtener_Rs(Tramos, momentos):
     Rs1 = np.array(Rs1)
     Rs2 = np.array(Rs2)
 
-    R = Rs2 + shift(Rs1, -1)
-    return R    
+    if Tramos[0]['voladizo'] == 'si':
+        R = Rs2 + shift(Rs1, -1)
+        return R
+
+    elif Tramos[-1]['voladizo'] == 'si':
+        R = Rs2 + shift(Rs1, 1)
+        return R
+
+    else Tramos[0]['voladizo'] == 'si':
+        R = Rs2 + shift(Rs1, -1)
+        return np.concatenate(Rs1[0],R)
