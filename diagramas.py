@@ -32,31 +32,34 @@ class graficador():
         self.Y = [ref]
         self.X = [Ltotal]
 
-        for i in range(len(Graficas.tipo)):
-            if Graficas.tipo[i] == "puntual":
-                ref += -Graficas.magnitud[i]
-                Ltotal += Graficas.longitud[i]
+        for i in range(len(self.tipo)):
+            if self.tipo[i] == "puntual":
+                ref += -self.magnitud[i]
+                Ltotal += self.longitud[i]
 
-            if Graficas.tipo[i] == "distribuida":
-                ref += -Graficas.magnitud[i] * Graficas.longitud[i]
-                Ltotal += Graficas.longitud[i]
+            if self.tipo[i] == "distribuida":
+                ref += -self.magnitud[i] * self.longitud[i]
+                Ltotal += self.longitud[i]
 
-            if Graficas.tipo[i] == "triangular":
-                ref += -0.5 * Graficas.magnitud[i] * Graficas.longitud[i]
-                Ltotal += Graficas.longitud[i]
+            if self.tipo[i] == "triangular":
+                ref += -0.5 * self.magnitud[i] * self.longitud[i]
+                Ltotal += self.longitud[i]
 
-            if Graficas.tipo[i] == "reaccion":
-                ref += Graficas.magnitud[i]
-                Ltotal += Graficas.longitud[i]
+            if self.tipo[i] == "reaccion":
+                ref += self.magnitud[i]
+                Ltotal += self.longitud[i]
 
-            if Graficas.tipo[i] == "nada":
-                ref += Graficas.magnitud[i]
-                Ltotal += Graficas.longitud[i]
+            if self.tipo[i] == "nada":
+                ref += self.magnitud[i]
+                Ltotal += self.longitud[i]
 
             self.Y.append(ref)
             self.X.append(Ltotal)
 
-        plt.figure()
+        fig = plt.figure(figsize=(10, 10))
         plt.plot(self.X, self.Y)
+        for i_x, i_y in zip(self.X, np.round(self.Y, 2)):
+            plt.text(i_x, i_y, '({}, {})'.format(i_x, i_y))
+        plt.grid()
         plt.show()
 
