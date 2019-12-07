@@ -7,118 +7,110 @@ import pandas as pd
 
 class Viga():
     def __init__(self):
-        self.tramos = []
+        self.tramos = [{} for i in range(int(input('Cuantos tramos tiene la viga: ')))]
 
-    def definir_tramos(self):
-        aux = True
-        while aux:
-            voladizo = input("Es un voladizo? ")
-            if voladizo != "si":
-                empotrado = input("Es un empotramiento? ")
-            else:
-                empotrado = "no"
+    def definir_tramo(self, tramo_i):
 
-            n_cargas = int(input('Cuantas cargas hay en el tramo? '))
+        print('Ingresando tramo: ' + str(tramo_i))
 
-            cargas = {}
+        voladizo = input("Es un voladizo?: ")
+        if voladizo != "si":
+            empotrado = input("Es un empotramiento?: ")
+        else:
+            empotrado = "no"
 
-            for i in range(n_cargas):
-                tipo_carga = input("Escriba el tipo de la carga " + str(i + 1) + " ")
+        n_cargas = int(input('Cuantas cargas hay en el tramo?: '))
 
-                if tipo_carga == "puntual":
-                    magnitud = float(input("Escriba la magnitud de la carga "))
-                    distancia = float(input("Escriba la distancia de la carga al extremo izquierdo del tramo "))
+        cargas = {}
 
-                    cargas['carga ' + str(i + 1)] = {
-                        'tipo': tipo_carga,
-                        'magnitud': magnitud,
-                        'distancia': distancia
-                    }
+        for i in range(n_cargas):
+            tipo_carga = input("Escriba el tipo de la carga " + str(i + 1) + ": ")
 
-                if tipo_carga == "distribuida":
-                    magnitud = float(input("Escriba la magnitud de la carga "))
-                    distancia = float(input("Escriba la distancia de la carga al extremo izquierdo del tramo "))
-                    l_carga = float(input("Escriba la longitud de la carga "))
+            if tipo_carga == "puntual":
+                magnitud = float(input("Escriba la magnitud de la carga: "))
+                distancia = float(input("Escriba la distancia de la carga al extremo izquierdo del tramo: "))
 
-                    cargas['carga ' + str(i + 1)] = {
-                        'tipo': tipo_carga,
-                        'magnitud': magnitud,
-                        'distancia': distancia,
-                        'longitud': l_carga
-                    }
+                cargas['carga ' + str(i + 1)] = {
+                    'tipo': tipo_carga,
+                    'magnitud': magnitud,
+                    'distancia': distancia
+                }
 
-                if tipo_carga == "triangular":
-                    magnitud = float(input("Escriba la magnitud de la carga "))
-                    distancia = float(input("Escriba la distancia de la carga al extremo izquierdo del tramo "))
-                    dist_pico = float(input("Escriba la distancia del pico al extremo izquierdo del tramo "))
-                    l_carga = float(input("Escriba la longitud de la carga "))
+            if tipo_carga == "distribuida":
+                magnitud = float(input("Escriba la magnitud de la carga: "))
+                distancia = float(input("Escriba la distancia de la carga al extremo izquierdo del tramo: "))
+                l_carga = float(input("Escriba la longitud de la carga: "))
 
-                    cargas['carga ' + str(i + 1)] = {
-                        'tipo': tipo_carga,
-                        'magnitud': magnitud,
-                        'distancia': distancia,
-                        'dist_pico': dist_pico,
-                        'longitud': l_carga
-                    }
+                cargas['carga ' + str(i + 1)] = {
+                    'tipo': tipo_carga,
+                    'magnitud': magnitud,
+                    'distancia': distancia,
+                    'longitud': l_carga
+                }
 
-                if tipo_carga == "momento":
+            if tipo_carga == "triangular":
+                magnitud = float(input("Escriba la magnitud de la carga: "))
+                distancia = float(input("Escriba la distancia de la carga al extremo izquierdo del tramo: "))
+                dist_pico = float(input("Escriba la distancia del pico al extremo izquierdo del tramo: "))
+                l_carga = float(input("Escriba la longitud de la carga: "))
 
-                    magnitud = float(input("Escriba la magnitud de la carga "))
-                    distancia = float(input("Escriba la distancia de la carga al extremo izquierdo del tramo "))
-                    sentido = input("Escriba si es sentidio horario o antihorario ")
+                cargas['carga ' + str(i + 1)] = {
+                    'tipo': tipo_carga,
+                    'magnitud': magnitud,
+                    'distancia': distancia,
+                    'dist_pico': dist_pico,
+                    'longitud': l_carga
+                }
 
-                    if sentido == "horario":
-                        magnitud = -magnitud
+            if tipo_carga == "momento":
 
-                    cargas['carga ' + str(i + 1)] = {
-                        'tipo': tipo_carga,
-                        'magnitud': magnitud,
-                        'distancia': distancia,
-                        'sentido': sentido
-                    }
+                magnitud = float(input("Escriba la magnitud de la carga: "))
+                distancia = float(input("Escriba la distancia de la carga al extremo izquierdo del tramo: "))
+                sentido = input("Escriba si es sentidio horario o antihorario: ")
 
-                if tipo_carga == "trapesoidal":
-                    magnitud_M = float(input("Escriba la magnitud del lado mayor "))
-                    distancia = float(input("Escriba la distancia de la carga al extremo izquierdo del tramo "))
-                    dist_M = float(input("Escriba la distancia del lado mayor al extremo izquierdo del tramo "))
+                if sentido == "horario":
+                    magnitud = -magnitud
 
-                    magnitud_m = float(input("Escriba la magnitud del lado menor "))
-                    dist_m = float(input("Escriba la distancia del lado menor al extremo izquierdo del tramo "))
+                cargas['carga ' + str(i + 1)] = {
+                    'tipo': tipo_carga,
+                    'magnitud': magnitud,
+                    'distancia': distancia,
+                    'sentido': sentido
+                }
 
-                    l_carga = float(input("Escriba la longitud de la carga "))
+            if tipo_carga == "trapesoidal":
+                magnitud_M = float(input("Escriba la magnitud del lado mayor: "))
+                distancia = float(input("Escriba la distancia de la carga al extremo izquierdo del tramo: "))
+                dist_M = float(input("Escriba la distancia del lado mayor al extremo izquierdo del tramo: "))
 
-                    cargas['carga ' + str(i + 1)] = {
-                        'tipo': tipo_carga,
-                        'distancia': distancia,
-                        'mag_mayor': magnitud_M,
-                        'dist_mayor': dist_M,
-                        'mag_menor': magnitud_m,
-                        'dist_menor': dist_m,
-                        'longitud': l_carga
-                    }
+                magnitud_m = float(input("Escriba la magnitud del lado menor: "))
+                dist_m = float(input("Escriba la distancia del lado menor al extremo izquierdo del tramo: "))
 
-                print("----")
+                l_carga = float(input("Escriba la longitud de la carga: "))
 
-            L = float(input("Escriba la longitud del tramo "))
-
-            tramo = {
-                'voladizo': voladizo,
-                'empotrado': empotrado,
-                'cargas': cargas,
-                'n_cargas': n_cargas,
-                'L': L
-            }
-
-            self.tramos.append(tramo)
-
-            mas_tramos = input("Hay mas tramos? ")
+                cargas['carga ' + str(i + 1)] = {
+                    'tipo': tipo_carga,
+                    'distancia': distancia,
+                    'mag_mayor': magnitud_M,
+                    'dist_mayor': dist_M,
+                    'mag_menor': magnitud_m,
+                    'dist_menor': dist_m,
+                    'longitud': l_carga
+                }
 
             print("----")
-            print("----")
-            print("\n")
 
-            if mas_tramos == 'no':
-                aux = False
+        L = float(input("Escriba la longitud del tramo: "))
+
+        tramo = {
+            'voladizo': voladizo,
+            'empotrado': empotrado,
+            'cargas': cargas,
+            'n_cargas': n_cargas,
+            'L': L
+        }
+
+        self.tramos[tramo_i-1] = tramo
 
 
 def calcular_voladizo(tramo, pos_tramo):
@@ -139,52 +131,52 @@ def calcular_voladizo(tramo, pos_tramo):
             else:
                 M += caract['magnitud'] * caract['longitud'] * (0.5 * caract['longitud'] + caract['distancia'])
 
-        if caract['tipo'] == 'triangular':
-            dif = caract['dist_pico'] - caract['distancia']
-
-            if pos_tramo == 0:
-                if dif > 0:
-                    M += 0.5 * caract['magnitud'] * caract['longitud'] * (
-                                tramo['L'] - caract['distancia'] - 2 / 3 * caract['longitud'])
-                else:
-                    M += 0.5 * caract['magnitud'] * caract['longitud'] * (
-                                tramo['L'] - caract['distancia'] - 1 / 3 * caract['longitud'])
-            else:
-                if dif > 0:
-                    M += 0.5 * caract['magnitud'] * caract['longitud'] * (
-                                caract['distancia'] + 2 / 3 * caract['longitud'])
-                else:
-                    M += 0.5 * caract['magnitud'] * caract['longitud'] * (
-                                caract['distancia'] + 1 / 3 * caract['longitud'])
-
-        if caract['tipo'] == 'momento':
-
-            if pos_tramo == 0:
-                M += -caract['magnitud']
-            else:
-                M += caract['magnitud']
-
-        if caract['tipo'] == 'trapesoidal':
-            dif = caract['dist_mayor'] - caract['dist_menor']
-            dif_mag = caract['mag_mayor'] - caract['mag_menor']
-            if pos_tramo == 0:
-                if dif > 0:
-                    M += 0.5 * dif_mag * caract['longitud'] * (
-                                tramo['L'] - caract['dist_menor'] - 2 / 3 * caract['longitud'])
-                    M += caract['mag_menor'] * caract['longitud'] * (
-                                tramo['L'] - 0.5 * caract['longitud'] - caract['dist_menor'])
-                else:
-                    M += 0.5 * dif_mag * caract['longitud'] * (
-                                tramo['L'] - caract['dist_mayor'] - 1 / 3 * caract['longitud'])
-                    M += caract['mag_menor'] * caract['longitud'] * (
-                                tramo['L'] - 0.5 * caract['longitud'] - caract['dist_mayor'])
-            else:
-                if dif > 0:
-                    M += 0.5 * dif_mag * caract['longitud'] * (caract['dist_menor'] + 2 / 3 * caract['longitud'])
-                    M += caract['mag_menor'] * caract['longitud'] * (0.5 * caract['longitud'] + caract['dist_menor'])
-                else:
-                    M += 0.5 * dif_mag * caract['longitud'] * (caract['dist_mayor'] + 1 / 3 * caract['longitud'])
-                    M += caract['mag_menor'] * caract['longitud'] * (0.5 * caract['longitud'] + caract['dist_mayor'])
+        # if caract['tipo'] == 'triangular':
+        #     dif = caract['dist_pico'] - caract['distancia']
+        #
+        #     if pos_tramo == 0:
+        #         if dif > 0:
+        #             M += 0.5 * caract['magnitud'] * caract['longitud'] * (
+        #                         tramo['L'] - caract['distancia'] - 2 / 3 * caract['longitud'])
+        #         else:
+        #             M += 0.5 * caract['magnitud'] * caract['longitud'] * (
+        #                         tramo['L'] - caract['distancia'] - 1 / 3 * caract['longitud'])
+        #     else:
+        #         if dif > 0:
+        #             M += 0.5 * caract['magnitud'] * caract['longitud'] * (
+        #                         caract['distancia'] + 2 / 3 * caract['longitud'])
+        #         else:
+        #             M += 0.5 * caract['magnitud'] * caract['longitud'] * (
+        #                         caract['distancia'] + 1 / 3 * caract['longitud'])
+        #
+        # if caract['tipo'] == 'momento':
+        #
+        #     if pos_tramo == 0:
+        #         M += -caract['magnitud']
+        #     else:
+        #         M += caract['magnitud']
+        #
+        # if caract['tipo'] == 'trapesoidal':
+        #     dif = caract['dist_mayor'] - caract['dist_menor']
+        #     dif_mag = caract['mag_mayor'] - caract['mag_menor']
+        #     if pos_tramo == 0:
+        #         if dif > 0:
+        #             M += 0.5 * dif_mag * caract['longitud'] * (
+        #                         tramo['L'] - caract['dist_menor'] - 2 / 3 * caract['longitud'])
+        #             M += caract['mag_menor'] * caract['longitud'] * (
+        #                         tramo['L'] - 0.5 * caract['longitud'] - caract['dist_menor'])
+        #         else:
+        #             M += 0.5 * dif_mag * caract['longitud'] * (
+        #                         tramo['L'] - caract['dist_mayor'] - 1 / 3 * caract['longitud'])
+        #             M += caract['mag_menor'] * caract['longitud'] * (
+        #                         tramo['L'] - 0.5 * caract['longitud'] - caract['dist_mayor'])
+        #     else:
+        #         if dif > 0:
+        #             M += 0.5 * dif_mag * caract['longitud'] * (caract['dist_menor'] + 2 / 3 * caract['longitud'])
+        #             M += caract['mag_menor'] * caract['longitud'] * (0.5 * caract['longitud'] + caract['dist_menor'])
+        #         else:
+        #             M += 0.5 * dif_mag * caract['longitud'] * (caract['dist_mayor'] + 1 / 3 * caract['longitud'])
+        #             M += caract['mag_menor'] * caract['longitud'] * (0.5 * caract['longitud'] + caract['dist_mayor'])
 
     if pos_tramo == 0:
         return -M
@@ -241,71 +233,71 @@ def calcular_d(tramo1, tramo2, empo=False, posempo=0):
                         _, a2 = tablas.distribuida_parcial(carac['magnitud'], tramo2['L'], carac['longitud'])
                         b2 += a2
 
-                if carac['tipo'] == 'momento':
-                    a1, _ = tablas.momento(carac['magnitud'], tramo2['L'], carac['distancia'],
-                                           tramo2['L'] - carac['distancia'])
-                    b2 += a1
-
-                if carac['tipo'] == 'triangular':
-                    if tramo2['L'] == carac['longitud'] and tramo2['L'] / 2 == carac['dist_pico']:
-                        a1 += tablas.piram_total(carac['magnitud'], tramo2['L'])
-                        b2 += a1
-
-                    if tramo2['L'] == carac['longitud'] and carac['dist_pico'] == 0:
-                        a1, _ = tablas.triangular_total(carac['magnitud'], tramo2['L'])
-                        b2 += a1
-
-                    if tramo2['L'] == carac['longitud'] and carac['dist_pico'] == tramo2['L']:
-                        _, a2 = tablas.triangular_total(carac['magnitud'], tramo2['L'])
-                        b2 += a2
-
-                    if (tramo2['L'] - carac['longitud']) / 2 == carac['distancia'] and tramo2['L'] / 2 == carac[
-                        'dist_pico']:
-                        a1 = tablas.piram_media(carac['magnitud'], 0.5 * carac['longitud'], tramo2['L'])
-                        b2 += a1
-
-                    if tramo2['L'] > carac['longitud'] and carac['dist_pico'] == tramo2['L']:
-                        _, a2 = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo2['L'])
-                        b2 += a2
-
-                    if tramo2['L'] > carac['longitud'] and carac['dist_pico'] == 0:
-                        a1, _ = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo2['L'])
-                        b2 += a1
-
-                    if carac['dist_pico'] + carac['longitud'] == tramo2['L']:
-                        _, a2 = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo2['L'])
-                        b2 += a2
-
-                    if carac['distancia'] == 0 and carac['dist_pico'] == carac['longitud'] and carac['longitud'] < \
-                            tramo2['L']:
-                        a1, _ = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo2['L'])
-                        b2 += a1
-
-                if carac['tipo'] == 'trapesoidal':
-
-                    if carac['dist_mayor'] == carac['distancia'] and carac['dist_menor'] == tramo2['L']:
-                        _, a21 = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                        tramo2['L'])
-                        _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
-                        b2 += a21 + a22
-
-                    if carac['dist_menor'] == carac['distancia'] and carac['dist_mayor'] == tramo2['L']:
-                        _, a21 = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                        tramo2['L'])
-                        _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
-                        b2 += a21 + a22
-
-                    if carac['distancia'] == 0 and carac['dist_mayor'] == carac['longitud']:
-                        a11, _ = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                        tramo2['L'])
-                        a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
-                        b2 += a11 + a12
-
-                    if carac['distancia'] == 0 and carac['dist_menor'] == carac['longitud']:
-                        a11, _ = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                        tramo2['L'])
-                        a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
-                        b1 += a11 + a12
+                # if carac['tipo'] == 'momento':
+                #     a1, _ = tablas.momento(carac['magnitud'], tramo2['L'], carac['distancia'],
+                #                            tramo2['L'] - carac['distancia'])
+                #     b2 += a1
+                #
+                # if carac['tipo'] == 'triangular':
+                #     if tramo2['L'] == carac['longitud'] and tramo2['L'] / 2 == carac['dist_pico']:
+                #         a1 += tablas.piram_total(carac['magnitud'], tramo2['L'])
+                #         b2 += a1
+                #
+                #     if tramo2['L'] == carac['longitud'] and carac['dist_pico'] == 0:
+                #         a1, _ = tablas.triangular_total(carac['magnitud'], tramo2['L'])
+                #         b2 += a1
+                #
+                #     if tramo2['L'] == carac['longitud'] and carac['dist_pico'] == tramo2['L']:
+                #         _, a2 = tablas.triangular_total(carac['magnitud'], tramo2['L'])
+                #         b2 += a2
+                #
+                #     if (tramo2['L'] - carac['longitud']) / 2 == carac['distancia'] and tramo2['L'] / 2 == carac[
+                #         'dist_pico']:
+                #         a1 = tablas.piram_media(carac['magnitud'], 0.5 * carac['longitud'], tramo2['L'])
+                #         b2 += a1
+                #
+                #     if tramo2['L'] > carac['longitud'] and carac['dist_pico'] == tramo2['L']:
+                #         _, a2 = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo2['L'])
+                #         b2 += a2
+                #
+                #     if tramo2['L'] > carac['longitud'] and carac['dist_pico'] == 0:
+                #         a1, _ = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo2['L'])
+                #         b2 += a1
+                #
+                #     if carac['dist_pico'] + carac['longitud'] == tramo2['L']:
+                #         _, a2 = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo2['L'])
+                #         b2 += a2
+                #
+                #     if carac['distancia'] == 0 and carac['dist_pico'] == carac['longitud'] and carac['longitud'] < \
+                #             tramo2['L']:
+                #         a1, _ = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo2['L'])
+                #         b2 += a1
+                #
+                # if carac['tipo'] == 'trapesoidal':
+                #
+                #     if carac['dist_mayor'] == carac['distancia'] and carac['dist_menor'] == tramo2['L']:
+                #         _, a21 = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+                #                                         tramo2['L'])
+                #         _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
+                #         b2 += a21 + a22
+                #
+                #     if carac['dist_menor'] == carac['distancia'] and carac['dist_mayor'] == tramo2['L']:
+                #         _, a21 = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+                #                                         tramo2['L'])
+                #         _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
+                #         b2 += a21 + a22
+                #
+                #     if carac['distancia'] == 0 and carac['dist_mayor'] == carac['longitud']:
+                #         a11, _ = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+                #                                         tramo2['L'])
+                #         a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
+                #         b2 += a11 + a12
+                #
+                #     if carac['distancia'] == 0 and carac['dist_menor'] == carac['longitud']:
+                #         a11, _ = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+                #                                         tramo2['L'])
+                #         a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
+                #         b1 += a11 + a12
 
         else:
 
@@ -333,71 +325,71 @@ def calcular_d(tramo1, tramo2, empo=False, posempo=0):
                         a1, _ = tablas.distribuida_parcial(carac['magnitud'], tramo1['L'], carac['longitud'])
                         b1 += a1
 
-                if carac['tipo'] == 'momento':
-                    _, a2 = tablas.momento(carac['magnitud'], tramo1['L'], carac['distancia'],
-                                           tramo1['L'] - carac['distancia'])
-                    b1 += a2
-
-                if carac['tipo'] == 'triangular':
-                    if tramo1['L'] == carac['longitud'] and tramo1['L'] / 2 == carac['dist_pico']:
-                        a2 += tablas.piram_total(carac['magnitud'], tramo1['L'])
-                        b1 += a2
-
-                    if tramo1['L'] == carac['longitud'] and carac['dist_pico'] == 0:
-                        _, a2 = tablas.triangular_total(carac['magnitud'], tramo1['L'])
-                        b1 += a2
-
-                    if tramo1['L'] == carac['longitud'] and carac['dist_pico'] == tramo['L']:
-                        a1, _ = tablas.triangular_total(carac['magnitud'], tramo1['L'])
-                        b1 += a1
-
-                    if (tramo1['L'] - carac['longitud']) / 2 == carac['distancia'] and tramo1['L'] / 2 == carac[
-                        'dist_pico']:
-                        a2 = tablas.piram_media(carac['magnitud'], 0.5 * carac['longitud'], tramo1['L'])
-                        b1 += a2
-
-                    if tramo1['L'] > carac['longitud'] and carac['dist_pico'] == tramo1['L']:
-                        a1, _ = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo1['L'])
-                        b1 += a1
-
-                    if tramo1['L'] > carac['longitud'] and carac['dist_pico'] == 0:
-                        _, a2 = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo1['L'])
-                        b1 += a2
-
-                    if carac['dist_pico'] + carac['longitud'] == tramo1['L']:
-                        a1, _ = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo1['L'])
-                        b1 += a1
-
-                    if carac['distancia'] == 0 and carac['dist_pico'] == carac['longitud'] and carac['longitud'] < \
-                            tramo1['L']:
-                        _, a2 = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo1['L'])
-                        b1 += a2
-
-                if carac['tipo'] == 'trapesoidal':
-
-                    if carac['dist_mayor'] == carac['distancia'] and carac['dist_menor'] == tramo1['L']:
-                        a11, _ = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                        tramo1['L'])
-                        a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
-                        b1 += a12 + a11
-
-                    if carac['dist_menor'] == carac['distancia'] and carac['dist_mayor'] == tramo1['L']:
-                        a11, _ = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                        tramo1['L'])
-                        a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
-                        b1 += a12 + a11
-
-                    if carac['distancia'] == 0 and carac['dist_mayor'] == carac['longitud']:
-                        _, a21 = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                        tramo1['L'])
-                        _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
-                        b1 += a21 + a22
-
-                    if carac['distancia'] == 0 and carac['dist_menor'] == carac['longitud']:
-                        _, a21 = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                        tramo1['L'])
-                        _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
-                        b1 += a21 + a22
+                # if carac['tipo'] == 'momento':
+                #     _, a2 = tablas.momento(carac['magnitud'], tramo1['L'], carac['distancia'],
+                #                            tramo1['L'] - carac['distancia'])
+                #     b1 += a2
+                #
+                # if carac['tipo'] == 'triangular':
+                #     if tramo1['L'] == carac['longitud'] and tramo1['L'] / 2 == carac['dist_pico']:
+                #         a2 += tablas.piram_total(carac['magnitud'], tramo1['L'])
+                #         b1 += a2
+                #
+                #     if tramo1['L'] == carac['longitud'] and carac['dist_pico'] == 0:
+                #         _, a2 = tablas.triangular_total(carac['magnitud'], tramo1['L'])
+                #         b1 += a2
+                #
+                #     if tramo1['L'] == carac['longitud'] and carac['dist_pico'] == tramo['L']:
+                #         a1, _ = tablas.triangular_total(carac['magnitud'], tramo1['L'])
+                #         b1 += a1
+                #
+                #     if (tramo1['L'] - carac['longitud']) / 2 == carac['distancia'] and tramo1['L'] / 2 == carac[
+                #         'dist_pico']:
+                #         a2 = tablas.piram_media(carac['magnitud'], 0.5 * carac['longitud'], tramo1['L'])
+                #         b1 += a2
+                #
+                #     if tramo1['L'] > carac['longitud'] and carac['dist_pico'] == tramo1['L']:
+                #         a1, _ = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo1['L'])
+                #         b1 += a1
+                #
+                #     if tramo1['L'] > carac['longitud'] and carac['dist_pico'] == 0:
+                #         _, a2 = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo1['L'])
+                #         b1 += a2
+                #
+                #     if carac['dist_pico'] + carac['longitud'] == tramo1['L']:
+                #         a1, _ = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo1['L'])
+                #         b1 += a1
+                #
+                #     if carac['distancia'] == 0 and carac['dist_pico'] == carac['longitud'] and carac['longitud'] < \
+                #             tramo1['L']:
+                #         _, a2 = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo1['L'])
+                #         b1 += a2
+                #
+                # if carac['tipo'] == 'trapesoidal':
+                #
+                #     if carac['dist_mayor'] == carac['distancia'] and carac['dist_menor'] == tramo1['L']:
+                #         a11, _ = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+                #                                         tramo1['L'])
+                #         a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
+                #         b1 += a12 + a11
+                #
+                #     if carac['dist_menor'] == carac['distancia'] and carac['dist_mayor'] == tramo1['L']:
+                #         a11, _ = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+                #                                         tramo1['L'])
+                #         a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
+                #         b1 += a12 + a11
+                #
+                #     if carac['distancia'] == 0 and carac['dist_mayor'] == carac['longitud']:
+                #         _, a21 = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+                #                                         tramo1['L'])
+                #         _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
+                #         b1 += a21 + a22
+                #
+                #     if carac['distancia'] == 0 and carac['dist_menor'] == carac['longitud']:
+                #         _, a21 = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+                #                                         tramo1['L'])
+                #         _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
+                #         b1 += a21 + a22
 
     else:
 
@@ -425,71 +417,71 @@ def calcular_d(tramo1, tramo2, empo=False, posempo=0):
                     a1, _ = tablas.distribuida_parcial(carac['magnitud'], tramo1['L'], carac['longitud'])
                     b1 += a1
 
-            if carac['tipo'] == 'momento':
-                _, a2 = tablas.momento(carac['magnitud'], tramo1['L'], carac['distancia'],
-                                       tramo1['L'] - carac['distancia'])
-                b1 += a2
-
-            if carac['tipo'] == 'triangular':
-                if tramo1['L'] == carac['longitud'] and tramo1['L'] / 2 == carac['dist_pico']:
-                    a2 += tablas.piram_total(carac['magnitud'], tramo1['L'])
-                    b1 += a2
-
-                if tramo1['L'] == carac['longitud'] and carac['dist_pico'] == 0:
-                    _, a2 = tablas.triangular_total(carac['magnitud'], tramo1['L'])
-                    b1 += a2
-
-                if tramo1['L'] == carac['longitud'] and carac['dist_pico'] == tramo['L']:
-                    a1, _ = tablas.triangular_total(carac['magnitud'], tramo1['L'])
-                    b1 += a1
-
-                if (tramo1['L'] - carac['longitud']) / 2 == carac['distancia'] and tramo1['L'] / 2 == carac[
-                    'dist_pico']:
-                    a2 = tablas.piram_media(carac['magnitud'], 0.5 * carac['longitud'], tramo1['L'])
-                    b1 += a2
-
-                if tramo1['L'] > carac['longitud'] and carac['dist_pico'] == tramo1['L']:
-                    a1, _ = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo1['L'])
-                    b1 += a1
-
-                if tramo1['L'] > carac['longitud'] and carac['dist_pico'] == 0:
-                    _, a2 = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo1['L'])
-                    b1 += a2
-
-                if carac['dist_pico'] + carac['longitud'] == tramo1['L']:
-                    a1, _ = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo1['L'])
-                    b1 += a1
-
-                if carac['distancia'] == 0 and carac['dist_pico'] == carac['longitud'] and carac['longitud'] < tramo1[
-                    'L']:
-                    _, a2 = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo1['L'])
-                    b1 += a2
-
-            if carac['tipo'] == 'trapesoidal':
-
-                if carac['dist_mayor'] == carac['distancia'] and carac['dist_menor'] == tramo1['L']:
-                    a11, _ = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                    tramo1['L'])
-                    a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
-                    b1 += a12 + a11
-
-                if carac['dist_menor'] == carac['distancia'] and carac['dist_mayor'] == tramo1['L']:
-                    a11, _ = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                    tramo1['L'])
-                    a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
-                    b1 += a12 + a11
-
-                if carac['distancia'] == 0 and carac['dist_mayor'] == carac['longitud']:
-                    _, a21 = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                    tramo1['L'])
-                    _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
-                    b1 += a21 + a22
-
-                if carac['distancia'] == 0 and carac['dist_menor'] == carac['longitud']:
-                    _, a21 = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                    tramo1['L'])
-                    _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
-                    b1 += a21 + a22
+            # if carac['tipo'] == 'momento':
+            #     _, a2 = tablas.momento(carac['magnitud'], tramo1['L'], carac['distancia'],
+            #                            tramo1['L'] - carac['distancia'])
+            #     b1 += a2
+            #
+            # if carac['tipo'] == 'triangular':
+            #     if tramo1['L'] == carac['longitud'] and tramo1['L'] / 2 == carac['dist_pico']:
+            #         a2 += tablas.piram_total(carac['magnitud'], tramo1['L'])
+            #         b1 += a2
+            #
+            #     if tramo1['L'] == carac['longitud'] and carac['dist_pico'] == 0:
+            #         _, a2 = tablas.triangular_total(carac['magnitud'], tramo1['L'])
+            #         b1 += a2
+            #
+            #     if tramo1['L'] == carac['longitud'] and carac['dist_pico'] == tramo['L']:
+            #         a1, _ = tablas.triangular_total(carac['magnitud'], tramo1['L'])
+            #         b1 += a1
+            #
+            #     if (tramo1['L'] - carac['longitud']) / 2 == carac['distancia'] and tramo1['L'] / 2 == carac[
+            #         'dist_pico']:
+            #         a2 = tablas.piram_media(carac['magnitud'], 0.5 * carac['longitud'], tramo1['L'])
+            #         b1 += a2
+            #
+            #     if tramo1['L'] > carac['longitud'] and carac['dist_pico'] == tramo1['L']:
+            #         a1, _ = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo1['L'])
+            #         b1 += a1
+            #
+            #     if tramo1['L'] > carac['longitud'] and carac['dist_pico'] == 0:
+            #         _, a2 = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo1['L'])
+            #         b1 += a2
+            #
+            #     if carac['dist_pico'] + carac['longitud'] == tramo1['L']:
+            #         a1, _ = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo1['L'])
+            #         b1 += a1
+            #
+            #     if carac['distancia'] == 0 and carac['dist_pico'] == carac['longitud'] and carac['longitud'] < tramo1[
+            #         'L']:
+            #         _, a2 = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo1['L'])
+            #         b1 += a2
+            #
+            # if carac['tipo'] == 'trapesoidal':
+            #
+            #     if carac['dist_mayor'] == carac['distancia'] and carac['dist_menor'] == tramo1['L']:
+            #         a11, _ = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+            #                                         tramo1['L'])
+            #         a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
+            #         b1 += a12 + a11
+            #
+            #     if carac['dist_menor'] == carac['distancia'] and carac['dist_mayor'] == tramo1['L']:
+            #         a11, _ = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+            #                                         tramo1['L'])
+            #         a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
+            #         b1 += a12 + a11
+            #
+            #     if carac['distancia'] == 0 and carac['dist_mayor'] == carac['longitud']:
+            #         _, a21 = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+            #                                         tramo1['L'])
+            #         _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
+            #         b1 += a21 + a22
+            #
+            #     if carac['distancia'] == 0 and carac['dist_menor'] == carac['longitud']:
+            #         _, a21 = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+            #                                         tramo1['L'])
+            #         _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo1['L'], carac['longitud'])
+            #         b1 += a21 + a22
 
         for car, carac in tramo2['cargas'].items():
 
@@ -515,71 +507,71 @@ def calcular_d(tramo1, tramo2, empo=False, posempo=0):
                     _, a2 = tablas.distribuida_parcial(carac['magnitud'], tramo2['L'], carac['longitud'])
                     b2 += a2
 
-            if carac['tipo'] == 'momento':
-                a1, _ = tablas.momento(carac['magnitud'], tramo2['L'], carac['distancia'],
-                                       tramo2['L'] - carac['distancia'])
-                b2 += a1
-
-            if carac['tipo'] == 'triangular':
-                if tramo2['L'] == carac['longitud'] and tramo2['L'] / 2 == carac['dist_pico']:
-                    a1 += tablas.piram_total(carac['magnitud'], tramo2['L'])
-                    b2 += a1
-
-                if tramo2['L'] == carac['longitud'] and carac['dist_pico'] == 0:
-                    a1, _ = tablas.triangular_total(carac['magnitud'], tramo2['L'])
-                    b2 += a1
-
-                if tramo2['L'] == carac['longitud'] and carac['dist_pico'] == tramo2['L']:
-                    _, a2 = tablas.triangular_total(carac['magnitud'], tramo2['L'])
-                    b2 += a2
-
-                if (tramo2['L'] - carac['longitud']) / 2 == carac['distancia'] and tramo2['L'] / 2 == carac[
-                    'dist_pico']:
-                    a1 = tablas.piram_media(carac['magnitud'], 0.5 * carac['longitud'], tramo2['L'])
-                    b2 += a1
-
-                if tramo2['L'] > carac['longitud'] and carac['dist_pico'] == tramo2['L']:
-                    _, a2 = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo2['L'])
-                    b2 += a2
-
-                if tramo2['L'] > carac['longitud'] and carac['dist_pico'] == 0:
-                    a1, _ = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo2['L'])
-                    b2 += a1
-
-                if carac['dist_pico'] + carac['longitud'] == tramo2['L']:
-                    _, a2 = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo2['L'])
-                    b2 += a2
-
-                if carac['distancia'] == 0 and carac['dist_pico'] == carac['longitud'] and carac['longitud'] < tramo2[
-                    'L']:
-                    a1, _ = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo2['L'])
-                    b2 += a1
-
-            if carac['tipo'] == 'trapesoidal':
-
-                if carac['dist_mayor'] == carac['distancia'] and carac['dist_menor'] == tramo2['L']:
-                    _, a21 = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                    tramo2['L'])
-                    _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
-                    b2 += a21 + a22
-
-                if carac['dist_menor'] == carac['distancia'] and carac['dist_mayor'] == tramo2['L']:
-                    _, a21 = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                    tramo2['L'])
-                    _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
-                    b2 += a21 + a22
-
-                if carac['distancia'] == 0 and carac['dist_mayor'] == carac['longitud']:
-                    a11, _ = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                    tramo2['L'])
-                    a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
-                    b2 += a11 + a12
-
-                if carac['distancia'] == 0 and carac['dist_menor'] == carac['longitud']:
-                    a11, _ = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
-                                                    tramo2['L'])
-                    a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
-                    b1 += a11 + a12
+            # if carac['tipo'] == 'momento':
+            #     a1, _ = tablas.momento(carac['magnitud'], tramo2['L'], carac['distancia'],
+            #                            tramo2['L'] - carac['distancia'])
+            #     b2 += a1
+            #
+            # if carac['tipo'] == 'triangular':
+            #     if tramo2['L'] == carac['longitud'] and tramo2['L'] / 2 == carac['dist_pico']:
+            #         a1 += tablas.piram_total(carac['magnitud'], tramo2['L'])
+            #         b2 += a1
+            #
+            #     if tramo2['L'] == carac['longitud'] and carac['dist_pico'] == 0:
+            #         a1, _ = tablas.triangular_total(carac['magnitud'], tramo2['L'])
+            #         b2 += a1
+            #
+            #     if tramo2['L'] == carac['longitud'] and carac['dist_pico'] == tramo2['L']:
+            #         _, a2 = tablas.triangular_total(carac['magnitud'], tramo2['L'])
+            #         b2 += a2
+            #
+            #     if (tramo2['L'] - carac['longitud']) / 2 == carac['distancia'] and tramo2['L'] / 2 == carac[
+            #         'dist_pico']:
+            #         a1 = tablas.piram_media(carac['magnitud'], 0.5 * carac['longitud'], tramo2['L'])
+            #         b2 += a1
+            #
+            #     if tramo2['L'] > carac['longitud'] and carac['dist_pico'] == tramo2['L']:
+            #         _, a2 = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo2['L'])
+            #         b2 += a2
+            #
+            #     if tramo2['L'] > carac['longitud'] and carac['dist_pico'] == 0:
+            #         a1, _ = tablas.triangular_lado(carac['magnitud'], carac['longitud'], tramo2['L'])
+            #         b2 += a1
+            #
+            #     if carac['dist_pico'] + carac['longitud'] == tramo2['L']:
+            #         _, a2 = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo2['L'])
+            #         b2 += a2
+            #
+            #     if carac['distancia'] == 0 and carac['dist_pico'] == carac['longitud'] and carac['longitud'] < tramo2[
+            #         'L']:
+            #         a1, _ = tablas.triangular_punt(carac['magnitud'], carac['longitud'], tramo2['L'])
+            #         b2 += a1
+            #
+            # if carac['tipo'] == 'trapesoidal':
+            #
+            #     if carac['dist_mayor'] == carac['distancia'] and carac['dist_menor'] == tramo2['L']:
+            #         _, a21 = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+            #                                         tramo2['L'])
+            #         _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
+            #         b2 += a21 + a22
+            #
+            #     if carac['dist_menor'] == carac['distancia'] and carac['dist_mayor'] == tramo2['L']:
+            #         _, a21 = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+            #                                         tramo2['L'])
+            #         _, a22 = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
+            #         b2 += a21 + a22
+            #
+            #     if carac['distancia'] == 0 and carac['dist_mayor'] == carac['longitud']:
+            #         a11, _ = tablas.triangular_punt(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+            #                                         tramo2['L'])
+            #         a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
+            #         b2 += a11 + a12
+            #
+            #     if carac['distancia'] == 0 and carac['dist_menor'] == carac['longitud']:
+            #         a11, _ = tablas.triangular_lado(carac['mag_mayor'] - carac['mag_menor'], carac['longitud'],
+            #                                         tramo2['L'])
+            #         a12, _ = tablas.distribuida_parcial(carac['mag_menor'], tramo2['L'], carac['longitud'])
+            #         b1 += a11 + a12
 
     return -6 * (b1 + b2)
 
