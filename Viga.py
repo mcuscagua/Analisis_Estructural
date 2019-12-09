@@ -759,11 +759,11 @@ def obtener_Rs(Tramos, momentos):
 
     if Tramos[0]['voladizo'] == 'si':
         R = Rs2 + shift(Rs1, -1)
-        return R
+        return np.insert(R,0,0)
 
     elif Tramos[-1]['voladizo'] == 'si':
         R = Rs2 + shift(Rs1, 1)
-        return R
+        return np.insert(R,-1,0)
 
     else:
         R = Rs2 + shift(Rs1, -1)
