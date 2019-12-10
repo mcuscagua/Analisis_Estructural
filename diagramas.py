@@ -97,3 +97,81 @@ class graficador():
         plt.grid()
         plt.show()
 
+
+    def grafica_momento(self):
+        df = self.plot_momento.copy()
+
+        YY = []
+        XX = []
+
+        for i in range(0, df.shape[0] - 1):
+
+            p1 = df.iloc[i, :]
+            p2 = df.iloc[i + 1, :]
+
+            if p1['X'] == p2['X']:
+                XX.append(np.array([0]))
+                YY.append(np.array([0]))
+
+            elif p1['Y'] == p2['Y']:
+                x1 = 0
+                y1 = 0
+                x2 = p2['X'] - p1['X']
+                y2 = x2 * p2['Y']
+
+                refx = np.linspace(0, x2)
+                refy = (y2 / x2) * (refx - x2) + y2
+                XX.append(refx)
+                YY.append(refy)
+            else:
+
+                if p2['Y'] < 0 and p1['Y'] < 0:
+                    refx = np.linspace(0, p2['X'] - p1['X'])
+
+                    a = (p2['Y'] - p1['Y']) / (2 * (p2['X'] - p1['X']))
+                    b = -p2['X'] * (p2['Y'] - p1['Y']) / (p2['X'] - p1['X'])
+                    d = p2['Y']
+                    refy = (-a * refx ** 2) + b * refx + d * refx
+                    XX.append(refx)
+                    YY.append(-refy)
+                else:
+                    refx = np.linspace(0, p2['X'] - p1['X'])
+
+                    a = (p2['Y'] - p1['Y']) / (2 * (p2['X'] - p1['X']))
+                    b = -p2['X'] * (p2['Y'] - p1['Y']) / (p2['X'] - p1['X'])
+                    d = p2['Y']
+                    refy = (a * refx ** 2) + b * refx + d * refx
+
+                    XX.append(refx)
+                    YY.append(refy)
+
+        XF = XX[0]
+        YF = YY[0]
+
+        for i in range(1, len(XX)):
+            if len(XX[i]) > 1:
+                XF = np.concatenate((XF, XX[i] + XF[-1]), axis=None)
+                YF = np.concatenate((YF, YY[i] + YF[-1]), axis=None)
+
+        self.Final = pd.DataFrame()
+        self.Final['X'] = XF
+        self.Final['Y'] = YF
+
+        Xi = []
+
+        referentes = df['X'].unique()
+        for i in range(len(referentes)):
+            Xi += np.where(self.Final['X'] == referentes[i])[0].tolist()
+
+        Yi = self.Final.iloc[Xi, 1].values.tolist()
+
+        Xi = np.array(Xi)
+        Yi = [np.round(j,2) for j in Yi]
+
+        plt.figure(figsize=(10, 10))
+        plt.plot(self.Final['X'], self.Final['Y'])
+        plt.grid()
+        #for i in range(len(Xi)):
+        #    plt.annotate("("+str(Xi[i])+","+str(Yi[i])+")", (Xi[i], Yi[i]), (Xi[i], Yi[i]))
+        plt.show()
+        
